@@ -1,0 +1,366 @@
+﻿<Page
+    x:Class="McOrder.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:McOrder"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="#FFC50303"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <local:McViewModel />
+    </Page.DataContext>
+    <Page.Resources>
+
+        <DataTemplate x:Key="LoadedTemplate">
+            <StackPanel Margin="10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Margin="10,0,0,0" Text="{Binding Price}" />
+                    <TextBlock Text="kr" />
+                </StackPanel>
+
+                <Image
+                    Width="150px"
+                    Height="100px"
+                    Source="{Binding ImagePath}" />
+
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ButtonTemplate">
+            <StackPanel Padding="5" Background="White">
+                <TextBlock
+                    Width="150px"
+                    Margin="0,0,10,0"
+                    Padding="25,15"
+                    FontWeight="Bold"
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding}"
+                    TextAlignment="Center" />
+            </StackPanel>
+
+        </DataTemplate>
+
+        <DataTemplate x:Key="ProductsInOrderTemp">
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding Price}" />
+                <TextBlock VerticalAlignment="Center" Text="KR" />
+                <Image
+                    Height="auto"
+                    MaxWidth="75"
+                    Source="{Binding ImagePath}" />
+            </StackPanel>
+
+        </DataTemplate>
+
+        <DataTemplate x:Key="OrderListTemplate">
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontWeight="Bold" Text="OrderNr : " />
+                <TextBlock Padding="5,0" Text="{Binding OrderNr}" />
+                <TextBlock FontWeight="Bold" Text="Total Price: " />
+                <TextBlock Padding="5,0" Text="{Binding TotalPrice}" />
+                <TextBlock FontWeight="Bold" Text="Kr" />
+            </StackPanel>
+
+        </DataTemplate>
+
+    </Page.Resources>
+
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="0.5*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="0.2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.RowSpan="1"
+            Grid.ColumnSpan="12"
+            Background="#FFFDC335"
+            BorderThickness="10,10,10,10"
+            FocusVisualPrimaryBrush="#FFF30909" />
+
+
+        <!--  Venstre side  -->
+        <TextBlock
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Margin="0,40,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FocusVisualSecondaryBrush="#99E4E4EE"
+            FontSize="22"
+            FontWeight="Bold"
+            Foreground="#FFC50303"
+            Text="Order List"
+            TextWrapping="Wrap" />
+
+        <ListView
+            x:Name="OrderList"
+            Grid.Row="2"
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,0"
+            Background="White"
+            ItemTemplate="{StaticResource OrderListTemplate}"
+            ItemsSource="{Binding Orderlist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedIndex="{Binding IdOfSelectedOrderInOrderList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Button
+            Grid.Row="6"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="220"
+            Height="57"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="LightGray"
+            Command="{Binding DeliverOrderCommand, Mode=OneWay}"
+            Content="Aflever Order"
+            FontSize="20"
+            FontWeight="Bold" />
+        <Button
+            Grid.Row="7"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="220"
+            Height="57"
+            Margin="10,0,10,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="LightGray"
+            Click="StartEditOfOrderInOrderList"
+            Content="Rediger Order"
+            FontSize="20"
+            FontWeight="Bold" />
+
+        <!--  Højre side  -->
+
+        <TextBlock
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Margin="0,40,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FocusVisualSecondaryBrush="#99E4E4EE"
+            FontSize="22"
+            FontWeight="Bold"
+            Foreground="#FFC50303"
+            Text="Igangværende Ordre"
+            TextWrapping="Wrap" />
+        <ListView
+            x:Name="CurrentOrder"
+            Grid.Row="2"
+            Grid.RowSpan="3"
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Background="White"
+            ItemTemplate="{StaticResource ProductsInOrderTemp}"
+            ItemsSource="{Binding CurrentOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SelectedIndex="{Binding ItemToRemoveFromCurrentOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+        <StackPanel
+            Grid.Row="5"
+            Grid.Column="9"
+            Background="Gray"
+            Orientation="Horizontal">
+
+            <TextBlock
+                Margin="0,0,10,0"
+                VerticalAlignment="Bottom"
+                FontSize="18"
+                FontWeight="Bold"
+                HorizontalTextAlignment="Left"
+                Text="Total Pris: "
+                TextWrapping="Wrap" />
+
+        </StackPanel>
+        <StackPanel
+            Grid.Row="5"
+            Grid.Column="10"
+            Background="Gray"
+            Orientation="Horizontal">
+
+            <TextBlock
+                x:Name="CurrentTotalPrice"
+                VerticalAlignment="Bottom"
+                FontSize="18"
+                FontWeight="Bold"
+                Text="{Binding TotalPriceOfCurrentOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock
+                VerticalAlignment="Bottom"
+                FontSize="18"
+                FontWeight="Bold"
+                Text="KR" />
+
+        </StackPanel>
+
+
+        <Button
+            Grid.Row="6"
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Width="220"
+            Height="57"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="LightGray"
+            Click="RemoveItemFromCurrentOrder"
+            Content="Fjern fra ordre"
+            FontSize="20"
+            FontWeight="Bold" />
+
+        <Button
+            x:Name="addOrder"
+            Grid.Row="7"
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Width="220"
+            Height="57"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="LightGray"
+            Click="AddOrderToOrderList"
+            Content="Tilføj til Ordre List"
+            FontSize="20"
+            FontWeight="Bold"
+            Visibility="Visible" />
+        <Button
+            x:Name="editOrder"
+            Grid.Row="7"
+            Grid.Column="9"
+            Grid.ColumnSpan="2"
+            Width="220"
+            Height="57"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="LightGray"
+            Click="EditOrderInOrderList"
+            Content="Opdater Ordre"
+            FontSize="20"
+            FontWeight="Bold"
+            Visibility="Collapsed" />
+
+        <!--  Center  -->
+
+        <TextBlock
+            Grid.Column="5"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FocusVisualSecondaryBrush="#99E4E4EE"
+            FontSize="36"
+            FontWeight="Bold"
+            Foreground="#FFC50303"
+            Text="McOrder"
+            TextWrapping="Wrap" />
+        <GridView
+            Grid.Row="2"
+            Grid.RowSpan="3"
+            Grid.Column="4"
+            Grid.ColumnSpan="4"
+            Margin="0,0,0,0"
+            Background="White"
+            IsItemClickEnabled="True"
+            ItemClick="Add_To_Current_Order"
+            ItemTemplate="{StaticResource LoadedTemplate}"
+            ItemsSource="{Binding LoadedProducts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+        <GridView
+            Grid.Row="6"
+            Grid.Column="4"
+            Grid.ColumnSpan="4"
+            IsItemClickEnabled="True"
+            ItemClick="LoadProductsFromButtonFile"
+            ItemTemplate="{StaticResource ButtonTemplate}"
+            ItemsSource="{Binding CategoryButtons}" />
+
+        <!--<Button
+            Grid.Row="6"
+            Grid.Column="4"
+            Width="160"
+            Height="57"
+            Margin="0,10,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="LightGray"
+            Content="Burger"
+            FontSize="20"
+            FontWeight="Bold"
+            Foreground="Black" />
+
+        <Button
+            Grid.Row="6"
+            Grid.Column="5"
+            Width="160"
+            Height="57"
+            Margin="10,10,10,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="LightGray"
+            Content="Drikkevarer"
+            FontSize="20"
+            FontWeight="Bold" />
+
+        <Button
+            Grid.Row="6"
+            Grid.Column="6"
+            Width="160"
+            Height="57"
+            Margin="10,10,10,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="LightGray"
+            Content="Dessert"
+            FontSize="20"
+            FontWeight="Bold" />
+
+        <Button
+            Grid.Row="6"
+            Grid.Column="7"
+            Width="160"
+            Height="57"
+            Margin="10,10,10,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="LightGray"
+            Content="Extra"
+            FontSize="20"
+            FontWeight="Bold" />-->
+
+    </Grid>
+</Page>
